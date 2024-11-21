@@ -17,20 +17,18 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <nav className="w-full flex items-center justify-between px-4 py-5 bg-white dark:bg-zinc-950 shadow-md">
+    <nav className="w-full flex items-center justify-between px-8 py-5 bg-white dark:bg-zinc-950 shadow-md">
       {/* Logo e Nome */}
-      <div className="flex items-center space-x-1">
-        <Image
-          src={TakeLogo}
-          alt="TakeFullness Logo"
-          width={40}
-          height={40}
-          priority
-        />
-        <Link href="/" className="font-bold text-2xl">
+        <Link href="/" className="font-bold text-2xl flex items-center space-x-1">
+          <Image
+            src={TakeLogo}
+            alt="TakeFullness Logo"
+            width={40}
+            height={40}
+            priority
+          />
           <span>Take</span><span className="text-primary">Fullness</span>
         </Link>
-      </div>
 
       {/* Desktop Menu */}
       <div className="hidden md:flex items-center space-x-6">
@@ -51,8 +49,12 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       <div className="md:hidden flex items-center">
+                  <ModeToggle />
+      <div className="mt-4">
+                </div>
         <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
           <SheetTrigger asChild>
+            
             <Button variant="ghost" size="sm" aria-label="Abrir menu">
               {/* Ícone de Hambúrguer */}
               <svg
@@ -73,7 +75,7 @@ export default function Navbar() {
           </SheetTrigger>
           <SheetContent className="bg-white dark:bg-zinc-950 text-gray-900 dark:text-white">
             <SheetHeader>
-              <nav className="flex flex-col items-end space-y-4 py-5">
+              <nav className="flex flex-col items-end space-y-4 py-10">
                 <Link href="/" onClick={() => setMenuOpen(false)}>
                   Início
                 </Link>
@@ -83,9 +85,7 @@ export default function Navbar() {
                 <Link href="/contact" onClick={() => setMenuOpen(false)}>
                   Deixe sua mensagem
                 </Link>
-                <div className="mt-4">
-                  <ModeToggle />
-                </div>
+                
               </nav>
             </SheetHeader>
           </SheetContent>
