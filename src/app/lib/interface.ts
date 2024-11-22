@@ -10,5 +10,9 @@ export interface fullBlog {
     title: string;
     content: any;
     titleImage: any;
+}
 
+export interface heroImage {
+    image1: any;
+    image2: any;
 }
