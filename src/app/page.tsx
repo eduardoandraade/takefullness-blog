@@ -1,92 +1,55 @@
-"use client"
+"use client";
 
+import { useState, useEffect } from "react";
 import HeroSection from "./components/HeroSection";
 import SplashScreen from "./components/SplashScreen";
-import { useState, useEffect } from "react";
 
-
+const TWO_HOURS = 2 * 60 * 60 * 1000; // 7.200.000 milissegundos
 
 export default function Home() {
-  const [showSplash, setShowSplash] = useState(true);
+  const [isLoading, setIsLoading] = useState<boolean | null>(null); // Inicializa como null
 
+  const handleSplashFinish = () => {
+    setIsLoading(false); // Finaliza o Splash e permite o carregamento do conteúdo
+    // Atualiza o timestamp da última vez que o Splash foi visto
+    localStorage.setItem("lastSeenSplash", Date.now().toString());
+  };
 
   useEffect(() => {
-    // Oculta o Splash Screen após 10 segundos
-    const timer = setTimeout(() => {
-      setShowSplash(false);
-    }, 10000); // 10 segundos
+    const lastSeen = localStorage.getItem("lastSeenSplash");
+    const now = Date.now();
 
-  }, []);
+    if (lastSeen) {
+      const elapsed = now - parseInt(lastSeen, 10); // Tempo decorrido em milissegundos
+      if (elapsed > TWO_HOURS) {
+        // Se passaram mais de 2 horas, mostra o Splash
+        setIsLoading(true);
+      } else {
+        // Não mostra o Splash
+        setIsLoading(false);
+      }
+    } else {
+      // Se não há registro, mostra o Splash
+      setIsLoading(true);
+    }
+  }, []); // Array de dependências vazio
 
+  if (isLoading === null) {
+    // Não renderiza nada até verificar o localStorage
+    return null;
+  }
 
   return (
-    
     <section className="mx-auto max-w-2xl px-4 sm:pb-6 lg:max-w-7xl lg:px-8">
-      {showSplash ? (
-        <SplashScreen />
+      {isLoading ? (
+        <SplashScreen onFinish={handleSplashFinish} />
       ) : (
         <div className="main-content">
-          {/* Conteúdo principal do site */}
           <HeroSection />
+          <h1 className="text-center text-3xl font-bold">Bem-vindo!</h1>
+          <p className="text-center">Explore nosso conteúdo incrível.</p>
         </div>
       )}
-          
-      {/*
-      
-      <HeroSection />
-      <div className="mb-8 flex flex-wrap justify-between md:mb-16">
-        <div className="mb-6 flex w-full flex-col justify-center sm:mb-12 lg:mb-0 lg:w-1/3 lg:pb-12 lg:pt-24">
-          <h1 className="mb-4 text-4xl font-bold text-black sm:text-5xl md:mb-8 md:text-6xl dark:text-gray-100">
-            Respire e abraçe o momento presente, acalme-se.
-          </h1>
-          <p className="max-w-md leading-relaxed text-gray-500 xl:text-lg">
-            Por aqui vamos trazer todo tipo de informações sobre saúde e
-            qualidade de vida de uma maneira útil, didática e criativa.
-          </p>
-        </div>
-
-        <div className="mb-12 flex w-full md:mb-16 lg:w-2/3">
-          <div className="relative left-12 top-12 z-10 -ml-12 overflow-hidden rounded-lg bg-gray-100 shadow-lg md:left-16 md:top-16 lg:ml-0">
-            <Image
-              src={urlFor(data.image2).url()}
-              alt="Foto 1"
-              priority
-              width={500}
-              height={500}
-              className="h-full w-full object-cover object-center"
-            />
-          </div>
-
-          <div className="overflow-hidden rounded-lg bg-gray-100 shadow-lg">
-            <Image
-              src={urlFor(data.image1).url()}
-              alt="Foto 2"
-              priority
-              width={500}
-              height={500}
-              className="h-full w-full object-cover object-center"
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="flex flex-col items-center justify-between gap-8 md:flex-row">
-        <div className="flex h-12 w-64 divide-x overflow-hidden rounded-lg border">
-          <Link
-            href="/post"
-            className="flex w-1/3 items-center justify-center text-gray-500 transition duration-100 hover:bg-gray-100 active:bg-gray-200"
-          >
-            Blog
-          </Link>
-          <Link
-            href="/recado"
-            className="flex w-2/3 items-center justify-center text-gray-500 transition duration-100 hover:bg-gray-100 active:bg-gray-200"
-          >
-            Deixe um recado :)
-          </Link>
-        </div>
-      </div>
-      */}
     </section>
   );
 }

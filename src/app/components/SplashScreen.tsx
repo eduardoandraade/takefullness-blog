@@ -3,38 +3,39 @@
 import { useEffect, useRef, useState } from "react";
 import lottie from "lottie-web";
 
-export default function SplashScreen() {
+export default function SplashScreen({ onFinish }: { onFinish: () => void }) {
   const animationContainer = useRef<HTMLDivElement | null>(null);
-  const [text, setText] = useState("inspire"); // Texto inicial
+  const [text, setText] = useState("prepare");
 
   useEffect(() => {
     let animationInstance: any;
 
-    if (animationContainer.current) {
-      // Carrega a animação Lottie
-      animationInstance = lottie.loadAnimation({
-        container: animationContainer.current, // Contêiner da animação
-        renderer: "svg",
-        loop: false, // Loop 
-        autoplay: true, // Reprodução automática
-        path: "/breath.json", // Caminho para o JSON
-      });
+    const timers = [
+      setTimeout(() => setText("inspire"), 2000), // Muda para "inspire" após 2 segundos
+      setTimeout(() => {
+        if (animationContainer.current) {
+          animationInstance = lottie.loadAnimation({
+            container: animationContainer.current,
+            renderer: "svg",
+            loop: false,
+            autoplay: true,
+            path: "/breath.json", // Caminho para o JSON
+          });
 
-      // Define a velocidade da animação
-      animationInstance.setSpeed(2); // Ajuste para acelerar a animação
+          animationInstance.setSpeed(2); // Velocidade da animação
+        }
+      }, 2000), // Inicia a animação após 2 segundos
+      setTimeout(() => setText("expire"), 7000), // Muda para "expire" após mais 5 segundos
+      setTimeout(() => {
+        onFinish(); // Notifica o componente pai
+      }, 13000),
+    ];
 
-      // Alterna os textos durante a animação
-      const intervals = [
-        setTimeout(() => setText("expire"), 5000), // Troca para "Expire..." após 5 segundos
-        setTimeout(() => setText("inspire"), 80000), // Troca para "Inspire..." após mais 8 segundos
-      ];
-
-      return () => {
-        intervals.forEach(clearTimeout); // Limpa os timers
-        animationInstance.destroy(); // Limpa a animação ao desmontar
-      };
-    }
-  }, []);
+    return () => {
+      timers.forEach(clearTimeout); // Limpa os timers
+      if (animationInstance) animationInstance.destroy(); // Limpa a animação
+    };
+  }, [onFinish]);
 
   return (
     <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-blue-800 z-50">
@@ -42,12 +43,9 @@ export default function SplashScreen() {
         {/* Contêiner do Lottie */}
         <div ref={animationContainer} className="absolute top-0 left-0 w-full h-full"></div>
 
-        {/* Texto sobreposto à animação */}
+        {/* Texto sobreposto */}
         <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-start z-10">
-          <h1
-            className="text-2xl font-light text-white opacity-0 animate-fade-in"
-            key={text} // Key para reiniciar a animação a cada troca de texto
-          >
+          <h1 className="text-2xl font-light text-white animate-fade-in" key={text}>
             {text}
           </h1>
         </div>
