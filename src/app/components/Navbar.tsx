@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { ModeToggle } from "./ModeToggle";
 import Image from "next/image";
-import TakeLogo from "../assets/logo-takefullness.png";
+import TakeLogo from "../../../public/logo-takefullness.png";
 import { useState } from "react";
 import { Button } from "@/components/ui/button"; // Do shadcn/ui
 import {
@@ -17,7 +17,7 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <nav className="w-full flex items-center justify-between px-8 py-5 bg-white dark:bg-zinc-950 shadow-md">
+    <nav className="w-full flex items-center justify-between px-8 py-5 dark:bg-zinc-950 shadow-md">
       {/* Logo e Nome */}
         <Link href="/" className="font-bold text-2xl flex items-center space-x-1">
           <Image

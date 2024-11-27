@@ -1,28 +1,39 @@
-import Image from "next/image";
-import Link from "next/link";
-import { client, urlFor } from "@/app/lib/sanity";
-import { heroImage } from "./lib/interface";
+"use client"
 
-export const revalidate = 30;
-
-async function getData() {
-  const query = `
-  *[_type == 'heroImage'][0]{ 
-    image1,
-      image2
-      }`;
-
-  const data = await client.fetch(query);
-
-  return data;
-}
+import HeroSection from "./components/HeroSection";
+import SplashScreen from "./components/SplashScreen";
+import { useState, useEffect } from "react";
 
 
-export default async function Home() {
-  const data: heroImage = await getData();
+
+export default function Home() {
+  const [showSplash, setShowSplash] = useState(true);
+
+
+  useEffect(() => {
+    // Oculta o Splash Screen após 10 segundos
+    const timer = setTimeout(() => {
+      setShowSplash(false);
+    }, 10000); // 10 segundos
+
+  }, []);
+
 
   return (
+    
     <section className="mx-auto max-w-2xl px-4 sm:pb-6 lg:max-w-7xl lg:px-8">
+      {showSplash ? (
+        <SplashScreen />
+      ) : (
+        <div className="main-content">
+          {/* Conteúdo principal do site */}
+          <HeroSection />
+        </div>
+      )}
+          
+      {/*
+      
+      <HeroSection />
       <div className="mb-8 flex flex-wrap justify-between md:mb-16">
         <div className="mb-6 flex w-full flex-col justify-center sm:mb-12 lg:mb-0 lg:w-1/3 lg:pb-12 lg:pt-24">
           <h1 className="mb-4 text-4xl font-bold text-black sm:text-5xl md:mb-8 md:text-6xl dark:text-gray-100">
@@ -75,6 +86,7 @@ export default async function Home() {
           </Link>
         </div>
       </div>
+      */}
     </section>
   );
 }
